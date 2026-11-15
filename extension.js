@@ -230,29 +230,38 @@ export default class MonitorBrightnessVolumeExtension extends Extension {
     await this._setVolumeIntent?.setValue(castInt(value), this._volumeBusMaxRng, this._volumeBus)
   }
 
+  // 显示屏幕提示，并兼容旧版 GNOME Shell 的 OSD 接口。
+  _showOsd (icon, value) {
+    const manager = Main.osdWindowManager
+    if (typeof manager.showAll === 'function')
+      manager.showAll(icon, 'Monitor', value, 1)
+    else
+      manager.show(-1, icon, 'Monitor', value, 1)
+  }
+
   // methods for the global keyboard shortcuts (they change the slider value)
   async brightnessUpKey () {
     const newValue = Math.min(1, this._brightness?.slider.value + (KEYBOARD_STEP / 100))
     this._brightness.slider.value = newValue
-    Main.osdWindowManager.show(-1, this._brightness.gicon, 'Monitor', newValue, 1)
+    this._showOsd(this._brightness.gicon, newValue)
   }
 
   async brightnessDownKey () {
     const newValue = Math.max(0, this._brightness?.slider.value - (KEYBOARD_STEP / 100))
     this._brightness.slider.value = newValue
-    Main.osdWindowManager.show(-1, this._brightness.gicon, 'Monitor', newValue, 1)
+    this._showOsd(this._brightness.gicon, newValue)
   }
 
   async volumeUpKey () {
     const newValue = Math.min(1, this._volume?.slider.value + (KEYBOARD_STEP / 100))
     this._volume.slider.value = newValue
-    Main.osdWindowManager.show(-1, this._volume.gicon, 'Monitor', newValue, 1)
+    this._showOsd(this._volume.gicon, newValue)
   }
 
   async volumeDownKey () {
     const newValue = Math.max(0, this._volume?.slider.value - (KEYBOARD_STEP / 100))
     this._volume.slider.value = newValue
-    Main.osdWindowManager.show(-1, this._volume.gicon, 'Monitor', newValue, 1)
+    this._showOsd(this._volume.gicon, newValue)
   }
 
   // callback when a change in monitor configuration was detected
