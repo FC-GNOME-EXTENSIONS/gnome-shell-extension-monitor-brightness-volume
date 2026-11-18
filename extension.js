@@ -154,8 +154,9 @@ export default class MonitorBrightnessVolumeExtension extends Extension {
 
   // optionally, the volume slider can be disabled in the settings
   _showVolumeSetting () {
-    this._volume.visible = this._volumeAvailable && this._settings?.get_boolean('show-volume')
-    this._setVolumeKeys(this._volumeAvailable && this._settings?.get_boolean('show-volume'))
+    const enabled = Boolean(this._volumeAvailable && this._settings?.get_boolean('show-volume'))
+    this._volume.visible = enabled
+    this._setVolumeKeys(enabled)
   }
 
   // (dis)connect global keyboard shortcuts for monitor volume
@@ -293,7 +294,8 @@ export default class MonitorBrightnessVolumeExtension extends Extension {
     this._volume.visible = false
 
     this._settings = this.getSettings()
-    this._settings.connect('changed::show-volume', this._showVolumeSetting.bind(this))
+    this._showVolumeSignal = this._settings.connect(
+      'changed::show-volume', this._showVolumeSetting.bind(this))
 
     // disable ourselves on logout so that any ddcutil processes that
     // are still active get killed
@@ -389,6 +391,8 @@ export default class MonitorBrightnessVolumeExtension extends Extension {
       this._monitorsChangedSignal = null
     }
 
+    this._settings.disconnect(this._showVolumeSignal)
+    this._showVolumeSignal = null
     this._settings = null
 
     this._setBrightnessKeys(false)

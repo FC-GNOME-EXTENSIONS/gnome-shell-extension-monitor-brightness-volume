@@ -19,8 +19,8 @@
       <summary>Monitor Volume Down Keybinding</summary>
     </key>
     <key type="b" name="show-volume">
-      <default>true</default>
-      <summary>Show Volume</summary>
+      <default>false</default>
+      <summary>Enable monitor volume control</summary>
     </key>
     <key type="u" name="ddcutil-retries">
       <range min="1" max="10" />

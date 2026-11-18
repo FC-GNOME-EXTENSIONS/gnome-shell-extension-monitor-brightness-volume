@@ -103,12 +103,14 @@ gnome-extensions info monitor-brightness-volume@ailin.nemui
 
 它调节的是显示器硬件音量，GNOME 系统输出音量仍由原有系统滑块控制。
 
-上游没有提供 `prefs.js` 设置界面。需要查看或调整配置时，可以使用安装目录内的 schema：
+显示器音量控制默认关闭。要启用它，在「扩展」应用中打开本扩展的设置，开启「显示器音量控制」。开关即时生效，关闭时会隐藏快捷设置中的显示器音量滑块，并停用对应快捷键。显示器亮度和 GNOME 系统音量仍可正常调节。
+
+也可以使用安装目录内的 schema 从命令行打开开关（将 `true` 改为 `false` 即可关闭）：
 
 ```bash
 SCHEMA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/monitor-brightness-volume@ailin.nemui/schemas"
-gsettings --schemadir "$SCHEMA_DIR" list-recursively \
-  org.gnome.shell.extensions.monitor-brightness-volume
+gsettings --schemadir "$SCHEMA_DIR" set \
+  org.gnome.shell.extensions.monitor-brightness-volume show-volume true
 ```
 
 ## 更新与排查
